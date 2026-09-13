@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BRAND_INFO, HERO_SLIDES, HeroSlideItem } from '../data/productData';
 import { 
   Star, Gift, Truck, ShieldCheck, ArrowRight, Car, Sparkles, Flame, Check,
-  ChevronLeft, ChevronRight, X
+  ChevronLeft, ChevronRight, X, Play
 } from 'lucide-react';
 
 interface HeroSectionProps {
@@ -24,7 +24,8 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
   const [isZoomOpen, setIsZoomOpen] = useState<boolean>(false);
 
   const slides: HeroSlideItem[] = HERO_SLIDES;
-  const SLIDE_DURATION = 4500; // 4.5 seconds per slide
+  const DEFAULT_SLIDE_DURATION = 4500; // 4.5 seconds for standard images
+  const currentSlideDuration = slides[activeSlide]?.durationMs || DEFAULT_SLIDE_DURATION;
   const TICK_INTERVAL = 50; // smooth 50ms ticks
 
   // Touch swipe handling
@@ -47,7 +48,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
 
     const timer = setInterval(() => {
       setProgress((prev) => {
-        const next = prev + (TICK_INTERVAL / SLIDE_DURATION) * 100;
+        const next = prev + (TICK_INTERVAL / currentSlideDuration) * 100;
         if (next >= 100) {
           handleNextSlide();
           return 0;
@@ -57,7 +58,7 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
     }, TICK_INTERVAL);
 
     return () => clearInterval(timer);
-  }, [isPlaying, isHovered, isZoomOpen, handleNextSlide]);
+  }, [isPlaying, isHovered, isZoomOpen, currentSlideDuration, handleNextSlide]);
 
   // Keyboard navigation for zoom modal
   useEffect(() => {
@@ -163,22 +164,46 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
                 {slides.map((slide, index) => (
                   <div
                     key={slide.id || index}
-                    className="w-full h-full shrink-0 relative flex items-center justify-center bg-[#0d0d0d] cursor-zoom-in"
+                    className="w-full h-full shrink-0 relative flex items-center justify-center bg-[#0d0d0d] cursor-zoom-in overflow-hidden"
                     onClick={() => setIsZoomOpen(true)}
                   >
-                    <img
-                      src={slide.url}
-                      alt={slide.alt || BRAND_INFO.name}
-                      referrerPolicy="no-referrer"
-                      onError={(e) => {
-                        // Fallback to high-speed CDN if local asset is loading
-                        if (e.currentTarget.src !== slide.fallbackUrl) {
-                          e.currentTarget.src = slide.fallbackUrl;
-                        }
-                      }}
-                      className="w-full h-full object-contain sm:object-cover object-center transition-transform duration-700"
-                      draggable={false}
-                    />
+                    {slide.isVideo ? (
+                      <div className="w-full h-full relative flex items-center justify-center">
+                        <video
+                          src={slide.videoUrl}
+                          poster={slide.url}
+                          autoPlay
+                          loop
+                          muted
+                          playsInline
+                          className="w-full h-full object-cover object-center"
+                          onError={(e) => {
+                            if (slide.videoFallbackUrl && e.currentTarget.src !== slide.videoFallbackUrl) {
+                              e.currentTarget.src = slide.videoFallbackUrl;
+                            }
+                          }}
+                        />
+                        {/* Subtle Badge for Video */}
+                        <div className="absolute bottom-3 left-3 z-10 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-[#c5a059]/40 flex items-center gap-1.5 text-[10px] text-[#e9c176] font-medium pointer-events-none">
+                          <Play className="w-2.5 h-2.5 fill-[#e9c176]" />
+                          <span>Video 4K • Tự Động Lặp</span>
+                        </div>
+                      </div>
+                    ) : (
+                      <img
+                        src={slide.url}
+                        alt={slide.alt || BRAND_INFO.name}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          // Fallback to high-speed CDN if local asset is loading
+                          if (e.currentTarget.src !== slide.fallbackUrl) {
+                            e.currentTarget.src = slide.fallbackUrl;
+                          }
+                        }}
+                        className="w-full h-full object-contain sm:object-cover object-center transition-transform duration-700"
+                        draggable={false}
+                      />
+                    )}
                   </div>
                 ))}
               </div>
@@ -416,22 +441,39 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
             <ChevronRight className="w-7 h-7" />
           </button>
 
-          {/* Zoomed Image Container */}
+          {/* Zoomed Image/Video Container */}
           <div
             className="relative max-w-4xl max-h-[85vh] w-full flex flex-col items-center justify-center"
             onClick={(e) => e.stopPropagation()}
           >
-            <img
-              src={slides[activeSlide]?.url}
-              alt={slides[activeSlide]?.alt}
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                if (e.currentTarget.src !== slides[activeSlide]?.fallbackUrl) {
-                  e.currentTarget.src = slides[activeSlide]?.fallbackUrl;
-                }
-              }}
-              className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-[#c5a059]/40"
-            />
+            {slides[activeSlide]?.isVideo ? (
+              <video
+                src={slides[activeSlide]?.videoUrl}
+                poster={slides[activeSlide]?.url}
+                autoPlay
+                loop
+                muted
+                playsInline
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-[#c5a059]/40 bg-black"
+                onError={(e) => {
+                  if (slides[activeSlide]?.videoFallbackUrl && e.currentTarget.src !== slides[activeSlide]?.videoFallbackUrl) {
+                    e.currentTarget.src = slides[activeSlide]?.videoFallbackUrl!;
+                  }
+                }}
+              />
+            ) : (
+              <img
+                src={slides[activeSlide]?.url}
+                alt={slides[activeSlide]?.alt}
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  if (e.currentTarget.src !== slides[activeSlide]?.fallbackUrl) {
+                    e.currentTarget.src = slides[activeSlide]?.fallbackUrl;
+                  }
+                }}
+                className="max-w-full max-h-[80vh] object-contain rounded-xl shadow-2xl border border-[#c5a059]/40"
+              />
+            )}
             <div className="mt-3 px-4 py-1.5 rounded-full bg-[#1c1b1b] border border-[#c5a059]/30 text-[#e9c176] text-xs font-serif tracking-wide">
               0{activeSlide + 1} / 0{slides.length} • {slides[activeSlide]?.title}
             </div>

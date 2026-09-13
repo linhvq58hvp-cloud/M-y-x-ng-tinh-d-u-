@@ -42,9 +42,25 @@ export interface HeroSlideItem {
   alt: string;
   title: string;
   tag: string;
+  isVideo?: boolean;
+  videoUrl?: string;
+  videoFallbackUrl?: string;
+  durationMs?: number;
 }
 
 export const HERO_SLIDES: HeroSlideItem[] = [
+  {
+    id: 'slide-video-smoke',
+    url: '/slides/hero-primary.png',
+    fallbackUrl: 'https://i.postimg.cc/RV8Y1TB4/Chat-GPT-Image-13-50-59-12-thg-9-2026.png',
+    isVideo: true,
+    videoUrl: '/slides/hero-smoke.mp4',
+    videoFallbackUrl: 'https://files.catbox.moe/c1fnhx.mp4',
+    alt: 'Video khói sương bốc lên từ máy khuếch tán Nova Privée Apex One',
+    title: 'Làn Khói Sương Êm Ái',
+    tag: 'Video 4K',
+    durationMs: 8000 // Display longer for the smoke video (8 seconds)
+  },
   {
     id: 'slide-0-primary',
     url: '/slides/hero-primary.png',
