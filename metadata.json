@@ -1,0 +1,6 @@
+{
+  "name": "Nova Privée",
+  "description": "Máy khuếch tán tinh dầu cao cấp Nova Privée - Thiết kế sang trọng, khuếch tán nano siêu êm, kiến tạo không gian sống thượng lưu.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
