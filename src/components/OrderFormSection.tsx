@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { BRAND_INFO, PRODUCT_COLORS, SCENT_COLLECTION } from '../data/productData';
+import { trackMetaPixelEvent } from '../utils/metaPixel';
 import { ShieldCheck, Truck, Gift, Check, ShoppingBag, QrCode, CreditCard, Lock, Sparkles, X, Loader2 } from 'lucide-react';
 
 interface OrderFormSectionProps {
@@ -102,6 +103,20 @@ export const OrderFormSection: React.FC<OrderFormSectionProps> = ({
     } catch (error) {
       console.warn('Lỗi khi gửi dữ liệu Google Sheet (đã ghi nhận nội bộ):', error);
     } finally {
+      // Fire Meta Pixel tracking events
+      trackMetaPixelEvent('Purchase', {
+        value: totalPrice,
+        currency: 'VND',
+        content_name: BRAND_INFO.model,
+        content_type: 'product',
+        num_items: quantity
+      });
+      trackMetaPixelEvent('Lead', {
+        content_name: 'Nova Privee Order',
+        value: totalPrice,
+        currency: 'VND'
+      });
+
       setIsSubmitting(false);
       setSubmittedOrder(orderDetails);
     }

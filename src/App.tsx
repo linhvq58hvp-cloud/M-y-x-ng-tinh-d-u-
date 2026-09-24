@@ -16,6 +16,7 @@ import { FaqSection } from './components/FaqSection';
 import { OrderFormSection } from './components/OrderFormSection';
 import { Footer } from './components/Footer';
 import { MobileStickyBar } from './components/MobileStickyBar';
+import { initMetaPixel } from './utils/metaPixel';
 import { 
   Star, 
   ShoppingBag, 
@@ -35,6 +36,11 @@ export default function App() {
   const [reservedName, setReservedName] = useState<string>('');
   const [reservedPhone, setReservedPhone] = useState<string>('');
   const [isOrderModalOpen, setIsOrderModalOpen] = useState<boolean>(false);
+
+  // Initialize Meta Pixel if configured
+  useEffect(() => {
+    initMetaPixel();
+  }, []);
 
   // Sync with URL Hash on load & hashchange
   useEffect(() => {

@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { BRAND_INFO, HERO_SLIDES, HeroSlideItem } from '../data/productData';
+import { trackMetaPixelEvent } from '../utils/metaPixel';
 import { 
   Star, Gift, Truck, ShieldCheck, ArrowRight, Car, Sparkles, Flame, Check,
   ChevronLeft, ChevronRight, X, Play
@@ -106,6 +107,11 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
     if (name || phone) {
       onQuickReserve(name, phone);
     }
+    trackMetaPixelEvent('InitiateCheckout', {
+      content_name: BRAND_INFO.model,
+      currency: 'VND',
+      value: BRAND_INFO.salePrice
+    });
     setIsReserved(true);
     onOrderClick();
     setTimeout(() => {

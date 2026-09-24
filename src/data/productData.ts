@@ -31,6 +31,9 @@ export const BRAND_INFO = {
     qrCodeFallback: 'https://i.postimg.cc/KY8G0TqN/1789268981570-1572866617261527986-2420771707387899129-89c7f35e4965341ebef63878166bf3c5.jpg'
   },
 
+  // Marketing & Analytics
+  metaPixelId: '1779206996550900', // Meta Pixel ID chính thức mới
+
   // Google Sheets Webhook Integration
   googleSheetScriptUrl: 'https://script.google.com/macros/s/AKfycbzUxh_ymDeZRulH8q1wsFYl7PejGP3lNzgWeO835dfVXvl7AHOAj8FmMFwplkOfXqQc/exec'
 };
