@@ -103,19 +103,39 @@ export const OrderFormSection: React.FC<OrderFormSectionProps> = ({
     } catch (error) {
       console.warn('Lỗi khi gửi dữ liệu Google Sheet (đã ghi nhận nội bộ):', error);
     } finally {
-      // Fire Meta Pixel tracking events
-      trackMetaPixelEvent('Purchase', {
-        value: totalPrice,
-        currency: 'VND',
-        content_name: BRAND_INFO.model,
-        content_type: 'product',
-        num_items: quantity
-      });
-      trackMetaPixelEvent('Lead', {
-        content_name: 'Nova Privee Order',
-        value: totalPrice,
-        currency: 'VND'
-      });
+      // Fire Meta Pixel & Conversions API (CAPI) tracking events with customer phone & name for high Event Match Quality (EMQ)
+      const purchaseEventId = `order_${orderId}`;
+      trackMetaPixelEvent(
+        'Purchase',
+        {
+          orderId,
+          value: totalPrice,
+          currency: 'VND',
+          content_name: BRAND_INFO.model,
+          content_type: 'product',
+          num_items: quantity
+        },
+        {
+          phone,
+          name
+        },
+        purchaseEventId
+      );
+
+      trackMetaPixelEvent(
+        'Lead',
+        {
+          orderId,
+          content_name: 'Nova Privee Order Lead',
+          value: totalPrice,
+          currency: 'VND'
+        },
+        {
+          phone,
+          name
+        },
+        `lead_${orderId}`
+      );
 
       setIsSubmitting(false);
       setSubmittedOrder(orderDetails);

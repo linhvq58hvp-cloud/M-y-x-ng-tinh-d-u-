@@ -107,11 +107,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onQuickReserve, onOrde
     if (name || phone) {
       onQuickReserve(name, phone);
     }
-    trackMetaPixelEvent('InitiateCheckout', {
-      content_name: BRAND_INFO.model,
-      currency: 'VND',
-      value: BRAND_INFO.salePrice
-    });
+    trackMetaPixelEvent(
+      'InitiateCheckout',
+      {
+        content_name: BRAND_INFO.model,
+        currency: 'VND',
+        value: BRAND_INFO.salePrice
+      },
+      {
+        name: name || undefined,
+        phone: phone || undefined
+      }
+    );
     setIsReserved(true);
     onOrderClick();
     setTimeout(() => {

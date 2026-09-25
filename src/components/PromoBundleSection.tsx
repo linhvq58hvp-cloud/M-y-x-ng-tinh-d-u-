@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BRAND_INFO } from '../data/productData';
+import { trackMetaPixelEvent } from '../utils/metaPixel';
 import { Check, ShoppingBag, Clock, Sparkles } from 'lucide-react';
 
 interface PromoBundleSectionProps {
@@ -120,7 +121,14 @@ export const PromoBundleSection: React.FC<PromoBundleSectionProps> = ({ onOrderC
 
           {/* Primary CTA */}
           <button
-            onClick={onOrderClick}
+            onClick={() => {
+              trackMetaPixelEvent('InitiateCheckout', {
+                content_name: `${BRAND_INFO.model} - Promo Bundle`,
+                currency: 'VND',
+                value: BRAND_INFO.salePrice
+              });
+              onOrderClick();
+            }}
             className="w-full h-14 bg-gradient-to-r from-[#c5a059] to-[#e9c176] hover:from-[#d4af37] hover:to-[#ffdea5] text-[#261900] rounded-xl font-bold text-sm sm:text-base uppercase tracking-wider transition-all transform active:scale-95 shadow-xl shadow-[#c5a059]/30 flex items-center justify-center gap-3"
           >
             <ShoppingBag className="w-5 h-5" />

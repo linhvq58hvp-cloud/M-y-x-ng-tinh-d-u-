@@ -32,7 +32,8 @@ export const BRAND_INFO = {
   },
 
   // Marketing & Analytics
-  metaPixelId: '1779206996550900', // Meta Pixel ID chính thức mới
+  metaPixelId: '1441153647920557', // Meta Pixel ID chính thức
+  metaConversionsApiConnected: true,
 
   // Google Sheets Webhook Integration
   googleSheetScriptUrl: 'https://script.google.com/macros/s/AKfycbzUxh_ymDeZRulH8q1wsFYl7PejGP3lNzgWeO835dfVXvl7AHOAj8FmMFwplkOfXqQc/exec'

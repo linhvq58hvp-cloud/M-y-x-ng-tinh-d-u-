@@ -1,6 +1,7 @@
 import React from 'react';
 import { ShoppingBag, Sparkles, LayoutGrid, Droplets, Star, HelpCircle } from 'lucide-react';
 import { BRAND_INFO } from '../data/productData';
+import { trackMetaPixelEvent } from '../utils/metaPixel';
 
 interface MobileStickyBarProps {
   onOrderClick: () => void;
@@ -38,7 +39,14 @@ export const MobileStickyBar: React.FC<MobileStickyBarProps> = ({
       {/* Primary CTA button */}
       <div className="px-3 pt-2 pb-1.5">
         <button
-          onClick={onOrderClick}
+          onClick={() => {
+            trackMetaPixelEvent('InitiateCheckout', {
+              content_name: `${BRAND_INFO.model} - Mobile Sticky`,
+              currency: 'VND',
+              value: BRAND_INFO.salePrice
+            });
+            onOrderClick();
+          }}
           className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-gradient-to-r from-[#c5a059] to-[#e9c176] hover:from-[#d4af37] hover:to-[#ffdea5] text-[#261900] font-bold text-xs uppercase tracking-wider rounded-xl shadow-lg shadow-[#c5a059]/30 transition-transform active:scale-98"
         >
           <ShoppingBag className="w-4 h-4" />
